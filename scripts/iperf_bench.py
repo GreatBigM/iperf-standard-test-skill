@@ -9,6 +9,7 @@
 退出码：0=全部完成；1=测试未完成（掉线/超时）；2=参数错误。
 """
 import argparse
+import re
 import subprocess
 import sys
 import time
@@ -53,28 +54,35 @@ def bench_round(device, server, wlan_ip, direction, streams, duration, udp, rate
 
 
 def parse_sum(out):
-    """提取 SUM 汇总行。返回 (吞吐Mbps, 丢包率, jitter)。
+    """提取汇总行。返回 (吞吐Mbps, 丢包率, jitter)。
 
     iperf3 输出格式：
-      TCP receiver: [SUM] 0.00-30.20 sec 402 MBytes 112 Mbits/sec receiver        (len=8)
-      UDP receiver: [SUM] ... sec 197 MBytes 110 Mbits/sec 0.487 ms 0/147884 (0%) receiver (len=12)
-      TCP sender:   [SUM] ... sec 318 MBytes 88.9 Mbits/sec 57 (null)              (retr 在 sender 行)
-    parts 索引（receiver）：[SUM]/时间/sec/字节/MBytes/速率/Mbits/sec/[jitter]/ms/[丢包]/(%)/receiver
+      多流: [SUM] 0.00-30.20 sec 402 MBytes 112 Mbits/sec receiver        (len=8)
+      单流: [  5] 0.00-5.02 sec 43.4 MBytes 72.6 Mbits/sec 0 sender        (无 SUM，结构同)
+      UDP : [SUM] ... sec 197 MBytes 110 Mbits/sec 0.487 ms 0/147884 (0%) receiver (len=12)
+    匹配规则：行含 sender/receiver 尾标（跳过表头 [ ID] 行），取最后一个匹配的 receiver/sender 对。
     """
     bw = retr = loss = jitter = ""
     for line in out.splitlines():
-        if "[SUM]" not in line:
+        if not line.startswith("["):
             continue
-        parts = line.split()
-        if len(parts) < 7:
-            continue
-        if "receiver" in line:
-            bw = parts[5]                     # 速率数值
-            if len(parts) >= 12:              # UDP 行：有 jitter + 丢包列
-                jitter = parts[7]
-                loss = parts[9]
-        elif len(parts) > 8 and "(null)" in line:  # 客户端 sender 行带 retr（尾部 (null)）
-            retr = parts[7]
+        fields = line.split()
+        if len(fields) < 3 or fields[1].startswith("ID"):
+            continue  # 表头/信息行（[ ID] Interval... / [  5] local ... connected）
+        if line.rstrip().endswith("receiver"):
+            m = re.search(r"([\d.]+) Mbits/sec", line)
+            if m:
+                bw = m.group(1)
+            # UDP 行有 jitter + 丢包：... Mbits/sec 0.487 ms 0/147884 (0%) receiver
+            m2 = re.search(r"([\d.]+) ms\s+(\d+/\d+)", line)
+            if m2:
+                jitter = m2.group(1)
+                loss = m2.group(2)
+        elif line.rstrip().endswith(("sender", "(null)")):
+            # retr 在 Mbits/sec 之后第一个数字：... Mbits/sec 57 (null) 或 ... Mbits/sec 0 sender
+            m = re.search(r"([\d.]+) Mbits/sec\s+(\d+)", line)
+            if m:
+                retr = m.group(2)
     return bw, retr, loss, jitter
 
 
