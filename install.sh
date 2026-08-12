@@ -69,7 +69,6 @@ install_one() {
 
     mkdir -p "${dest}"
     cp "${TMP}/repo/SKILL.md" "${dest}/"
-    cp "${TMP}/repo/SCHEMA.md" "${dest}/"
     for d in ${COPY_DIRS}; do
         [ -d "${TMP}/repo/${d}" ] && cp -r "${TMP}/repo/${d}" "${dest}/"
     done
