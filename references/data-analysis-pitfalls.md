@@ -41,7 +41,7 @@
 
 ## 7. 数据提取陷阱
 
-- `grep "SUM"` 拿汇总行（吞吐+重传+丢包）
+- `grep "SUM"` 拿汇总行（吞吐+重传+丢包）——**单流 P1 无 [SUM] 前缀**（用 `[  5]` 且内部带空格），须按行尾 sender/receiver 或正则匹配；用列索引会因 `[  5]` 内部空格导致列偏移（08-12 实锤，已改正则）
 - `iperf3: error - the server is busy` = 重试信号不是失败（server 被占）
 - 设备 busybox 无 head/nohup：`head` 用 `cat|grep` 替代；串口 `&` 不需要 nohup
 - iperf3 死链接：`/system/bin/iperf3` 可能指向未挂载 SD 卡 → 显式用 `/tmp/iperf3`
