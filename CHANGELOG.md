@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v1.2.0 (2026-08-18)
+
+- **README 依赖表补 ZCode**：多 agent 列表统一为 Hermes / Claude Code / Codex / ZCode
+- 版本 1.1.0 → 1.2.0
+
 ## v1.1.0 (2026-08-18)
 
 - **ZCode 安装目标**：install.sh 支持 ZCode（探测 `~/.zcode` → 安装到 `~/.zcode/skills/iperf-standard-test`），README 补 `--target zcode` 示例与手动复制路径，发布页一键命令即可装到 ZCode

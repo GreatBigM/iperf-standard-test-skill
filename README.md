@@ -34,7 +34,7 @@ curl -fsSL https://raw.githubusercontent.com/GreatBigM/iperf-standard-test-skill
 
 | 依赖 | 必需 | 说明 |
 |------|------|------|
-| Hermes / Claude / Codex | ✓ | skill 由 agent 加载执行 |
+| Hermes / Claude / Codex / ZCode | ✓ | skill 由 agent 加载执行 |
 | iperf3 | ✓ | 设备端 `/tmp/iperf3` + 主机端 `iperf3 -s` |
 | adb | ✓（ADB 通道测试时） | 短测（≤60s）通道 |
 | 串口 | ✓（长测 >60s 时） | 串口持久 shell 后台执行 |
