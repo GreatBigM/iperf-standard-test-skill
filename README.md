@@ -14,13 +14,14 @@ curl -fsSL https://gitee.com/GreatBigM/iperf-standard-test-skill/raw/main/instal
 
 等价于手动复制，不经过安全扫描。重复执行 = 升级（自动备份旧版到 `.bak.<时间戳>`）。
 
-指定目标：`bash install.sh --target hermes,claude` 或 `--all`（自动探测已装 agent）。
+指定目标：`bash install.sh --target hermes,claude,zcode` 或 `--all`（自动探测已装 agent，含 ZCode）。
 
 ### 方式 2：手动复制（永远可行）
 
 ```bash
 git clone --depth 1 https://gitee.com/GreatBigM/iperf-standard-test-skill.git /tmp/iperf-skill
-cp -r /tmp/iperf-skill/templates /tmp/iperf-skill/references /tmp/iperf-skill/scripts /tmp/iperf-skill/SKILL.md /tmp/iperf-skill/CHANGELOG.md ~/.hermes/skills/iperf-standard-test/
+cp -r /tmp/iperf-skill/templates /tmp/iperf-skill/references /tmp/iperf-skill/scripts /tmp/iperf-skill/SKILL.md /tmp/iperf-skill/CHANGELOG.md ~/.hermes/skills/iperf-standard-test/   # Hermes
+cp -r /tmp/iperf-skill/templates /tmp/iperf-skill/references /tmp/iperf-skill/scripts /tmp/iperf-skill/SKILL.md /tmp/iperf-skill/CHANGELOG.md ~/.zcode/skills/iperf-standard-test/   # ZCode
 ```
 
 ### 方式 3：GitHub 镜像（海外备选）

@@ -1,7 +1,7 @@
 ---
 name: iperf-standard-test
 description: iperf3 标准吞吐测试：测试矩阵设计、执行通道选择、数据分析与报告模板全流程。
-version: 1.0.0
+version: 1.1.0
 category: devops
 metadata:
   hermes:
