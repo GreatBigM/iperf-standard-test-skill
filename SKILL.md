@@ -4,7 +4,7 @@ description: iperf3 标准吞吐测试：测试矩阵设计、执行通道选择
 version: 1.1.0
 category: devops
 metadata:
-  hermes:
+  agent:
     triggers: [iperf测试, 吞吐测试, 带宽测试, 压测, 性能测试, 测试报告, 爬坡, 重传率分析]
 ---
 
