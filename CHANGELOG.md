@@ -21,3 +21,10 @@
 - 数据分析坑参考（references/data-analysis-pitfalls.md，10 条实测教训：新增丢包分层误归因/池耗尽骤降）
 - 标准测试执行脚本（scripts/iperf_bench.py，isatty 双通道）
 - 来源：2026-08-07~11 HM6502 系列实测经验提炼（TCP 512K 消融/爬坡检查/环境波动补测）
+
+## 1.2.1 (2026-08-28)
+
+### Added
+
+- install.sh 新增 pi 安装目标（探测 `~/.pi/agent` → 安装到 `~/.pi/agent/skills/<skill>`，pi 自动发现）
+- 版本 1.2.0 → 1.2.1
