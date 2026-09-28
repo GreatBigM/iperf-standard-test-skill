@@ -1,7 +1,7 @@
 ---
 name: iperf-standard-test
 description: iperf3 标准吞吐测试：测试矩阵设计、执行通道选择、数据分析与报告模板全流程。
-version: 1.2.1
+version: 1.2.2
 category: devops
 metadata:
   agent:
@@ -46,6 +46,7 @@ metadata:
 2. 绑定地址：iperf 必须 `-B <wlan0_IP>`（强制走 WiFi，多网卡时双保险）
 3. server 可用：`ss -tlnp | grep 5201` 本机 iperf3 -s 在跑；`iperf3: error - the server is busy` 是重试信号不是失败
 4. /tmp 工具：iperf3 二进制存在（烧录后必重推，死链接检查 `ls -l /tmp/iperf3`）
+5. **设备默认流数陷阱**：09-02 起设备 `/data/iperf3` 为默认 P5 重编版（num_streams 1→5，src/iperf_api.c，commit 4598bf8；**重刷镜像回退工程单流版**）——跑不带 `-P` 的裸命令得到的是 5 流结果；判单流性能必须显式 `-P 1`（下方模板已全显式，勿在裸命令上省参数）
 
 ## 三、执行（通道选择铁律）
 
