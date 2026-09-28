@@ -1,7 +1,7 @@
 ---
 name: iperf-standard-test
 description: iperf3 标准吞吐测试：测试矩阵设计、执行通道选择、数据分析与报告模板全流程。
-version: 1.2.2
+version: 1.2.3
 category: devops
 metadata:
   agent:
@@ -43,10 +43,11 @@ metadata:
 ## 二、前置检查（测前 30 秒）
 
 1. WiFi 配网：`wpa_cli -p <ctrl_dir> -i wlan0 status` → wpa_state=COMPLETED + ip_address 有值
-2. 绑定地址：iperf 必须 `-B <wlan0_IP>`（强制走 WiFi，多网卡时双保险）
-3. server 可用：`ss -tlnp | grep 5201` 本机 iperf3 -s 在跑；`iperf3: error - the server is busy` 是重试信号不是失败
-4. /tmp 工具：iperf3 二进制存在（烧录后必重推，死链接检查 `ls -l /tmp/iperf3`）
-5. **设备默认流数陷阱**：09-02 起设备 `/data/iperf3` 为默认 P5 重编版（num_streams 1→5，src/iperf_api.c，commit 4598bf8；**重刷镜像回退工程单流版**）——跑不带 `-P` 的裸命令得到的是 5 流结果；判单流性能必须显式 `-P 1`（下方模板已全显式，勿在裸命令上省参数）
+2. 绑定地址：iperf 用 `-B <wlan0_IP>`（多网卡时选源地址）——**但 `-B` ≠ 强制走 WiFi**：eth0 与 wlan0 **同网段**时（本机/serial-tftp 默认布置）路由照样把流送 eth0，09-28 实测整套矩阵压在 94~95M（=100BASE-TX 天花板）而 wlan0 计数纹丝不动
+3. **网口归属自证（硬前置，与配网同级，漏了会让整轮结论作废）**：打流前后各采一次 `cat /proc/net/dev`，**wlan0 的 RX/TX 字节增量必须 ≈ 本次流量**（09-28 反例：8s 内 wlan0 零增量、eth0 涨 ~99MB ⇒ 数据作废重跑）。增量不达标先清路由：设备侧 `ip route`/`route` 删同网段重复条目，或让 eth0 换另一网段/临时摘掉
+4. server 可用：`ss -tlnp | grep 5201` 本机 iperf3 -s 在跑；`iperf3: error - the server is busy` 是重试信号不是失败
+5. /tmp 工具：iperf3 二进制存在（烧录后必重推，死链接检查 `ls -l /tmp/iperf3`）
+6. **设备默认流数陷阱**：09-02 起设备 `/data/iperf3` 为默认 P5 重编版（num_streams 1→5，src/iperf_api.c，commit 4598bf8；**重刷镜像回退工程单流版**）——跑不带 `-P` 的裸命令得到的是 5 流结果；判单流性能必须显式 `-P 1`（下方模板已全显式，勿在裸命令上省参数）
 
 ## 三、执行（通道选择铁律）
 
@@ -86,6 +87,7 @@ grep -E "\[SUM\]" test.log | awk '{print $4, $5, $6, $7}'
 
 ### 4.2 分析四查
 
+0. **网口归属**（先查，最易全盘误判）：见 §二 第 3 条 `/proc/net/dev` 差分——归属不对时后面三查全是在分析以太网
 1. **完成性**：`iperf Done.` + SUM 行存在 = 测试完整；无 Done = 中途断连（掉线红线上报）
 2. **爬坡**：首秒吞吐 vs 全程均值——首秒 ≥80% 均值 = 无爬坡（TCP 窗口到位）；首秒低持续爬升 = 窗口/BDP 不足
 3. **重传率**：`retr` 列——重传高 = 无线环境差（AP 干扰），不是驱动问题；对比轮次间重传差异判断环境波动
