@@ -12,7 +12,8 @@ iperf3 标准吞吐测试方法论 skill — 测试矩阵设计、执行通道�
 curl -fsSL https://gitee.com/GreatBigM/iperf-standard-test-skill/raw/main/install.sh | bash
 ```
 
-等价于手动复制，不经过安全扫描。重复执行 = 升级（自动备份旧版到 `.bak.<时间戳>`）。
+等价于手动复制，不经过安全扫描。重复执行 = 升级（自动备份旧版到 `<tool 根>/skills-backup/`，**扫描根之外**——备份留在 skills/ 内会被当成第二个同名技能加载）。
+推送前有闸门（`scripts/publish-check.py` 脱敏 + CHANGELOG 同步）：`git config core.hooksPath scripts/hooks` 启用一次即可。
 
 指定目标：`bash install.sh --target hermes,claude,zcode` 或 `--all`（自动探测已装 agent，含 ZCode）。
 
