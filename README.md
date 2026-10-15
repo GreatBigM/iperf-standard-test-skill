@@ -54,6 +54,6 @@ curl -fsSL https://raw.githubusercontent.com/GreatBigM/iperf-standard-test-skill
 
 - `SKILL.md` — 主流程
 - `scripts/iperf_bench.py` — 标准测试执行器（多轮执行 + 结果汇总，AI/终端双通道）
-- `references/data-analysis-pitfalls.md` — 10 条实测数据分析坑
+- `references/data-analysis-pitfalls.md` — 12 条实测数据分析坑
 - `templates/report-template.md` — 测试报告模板
 - `CHANGELOG.md` — 版本历史

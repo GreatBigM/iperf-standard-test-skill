@@ -1,7 +1,7 @@
 ---
 name: iperf-standard-test
 description: iperf3 标准吞吐测试：测试矩阵设计、执行通道选择、数据分析与报告模板全流程。
-version: 1.2.4
+version: 1.2.6
 category: devops
 metadata:
   agent:
@@ -167,4 +167,5 @@ cat /proc/meminfo | grep -E "MemFree|MemAvailable"
 - `templates/report-template.md` — 测试报告模板（YAML 头 + 数据表 + 分析 + 结论）
 - `references/data-analysis-pitfalls.md` — 数据分析坑（爬坡误判/单轮陷阱/跨时段对比/重传归因）
 - `scripts/iperf_bench.py` — 标准测试执行脚本（测试矩阵 → 多轮执行 → 结果汇总，isatty 双通道）
+- `scripts/publish-check.py` — 发布前脱敏闸门（随安装下发；自带 `--self-test`，pre-push 调用）
 - `CHANGELOG.md` — 版本历史
